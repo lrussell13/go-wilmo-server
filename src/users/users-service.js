@@ -4,16 +4,16 @@ const bcrypt = require('bcryptjs')
 const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
 
 const UsersService = {
-    hasUserWithUserName(db, user_name) {
-      return db('wellread_users')
-        .where({ user_name })
+    hasUserWithEmail(db, email) {
+      return db('go_wilmo_users')
+        .where({ email })
         .first()
         .then(user => !!user)
     },
     insertUser(db, newUser) {
       return db
         .insert(newUser)
-        .into('wellread_users')
+        .into('go_wilmo_users')
         .returning('*')
         .then(([user]) => user)
     },

@@ -7,9 +7,9 @@ const jsonBodyParser = express.json()
 
 usersRouter
     .post('/', jsonBodyParser, (req, res, next) => {
-    const { password, user_name } = req.body
+    const { password, email } = req.body
 
-    for (const field of ['user_name', 'password'])
+    for (const field of ['email', 'password'])
         if (!req.body[field])
           return res.status(400).json({
             error: `Missing '${field}' in request body`
@@ -20,18 +20,18 @@ usersRouter
     if (passwordError)
         return res.status(400).json({ error: passwordError })
     
-    UsersService.hasUserWithUserName(
+    UsersService.hasUserWithEmail(
         req.app.get('db'),
-          user_name
+          email
         )
-        .then(hasUserWithUserName => {
-        if (hasUserWithUserName)
-            return res.status(400).json({ error: `Username already taken` })
+        .then(hasUserWithEmail => {
+        if (hasUserWithEmail)
+            return res.status(400).json({ error: `Email is in use` })
         
         return UsersService.hashPassword(password)
             .then(hashedPassword => {
                 const newUser = {
-                user_name,
+                email,
                 password: hashedPassword,
                 }
                             return UsersService.insertUser(
